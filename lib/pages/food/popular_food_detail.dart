@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/controllers/cart_controller.dart';
 import 'package:food_delivery_app/controllers/popular_product_controller.dart';
 import 'package:food_delivery_app/pages/home/main_food_page.dart';
 import 'package:food_delivery_app/utils/app_color.dart';
@@ -19,7 +20,7 @@ class PopularFoodDetail extends StatelessWidget {
 
     var product = Get.find<PopularProductController>().popularProductList[pageId];
 
-    Get.find<PopularProductController>().initProduct();
+    Get.find<PopularProductController>().initProduct(product, Get.find<CartController>());
 
 
     return Scaffold(
@@ -53,7 +54,33 @@ class PopularFoodDetail extends StatelessWidget {
                         Get.to(() => MainFoodPage());
                       },
                       child: AppIcon(icon: Icons.arrow_back_ios)),
-                  AppIcon(icon: Icons.shopping_cart_outlined)
+                  GetBuilder<PopularProductController>(builder: (controller){
+                    return Stack(
+                      children: [
+                        AppIcon(icon: Icons.shopping_cart_outlined),
+                        Get.find<PopularProductController>().totalItems >= 1 ?
+                        Positioned(
+                          right:0, top:0,
+                          child: AppIcon(icon: Icons.circle,
+                            size: 20,
+                            iconColor: Colors.transparent,
+                            backgroundColor: AppColor.mainColor,),
+                        ) :
+                            Container(),
+
+                        Get.find<PopularProductController>().totalItems >= 1 ?
+                        Positioned(
+                          right:3, top:3,
+                          child: BigText(text: Get.find<PopularProductController>().totalItems.toString(),
+                          size: 12, color: Colors.white,
+                          ),
+                        ) :
+                        Container(),
+
+
+                      ],
+                    );
+                  })
                 ],
               )),
           Positioned(
@@ -113,7 +140,7 @@ class PopularFoodDetail extends StatelessWidget {
                         },
                         child: Icon(Icons.remove, color: AppColor.signColor,)),
                     SizedBox(width: Dimensions.width10/2,),
-                    BigText(text: popularProduct.quantity.toString()),
+                    BigText(text: popularProduct.inCartItems.toString()),
                     SizedBox(width: Dimensions.width10/2,),
                     GestureDetector(
                         onTap: (){
@@ -125,7 +152,11 @@ class PopularFoodDetail extends StatelessWidget {
               ),
               Container(
                 padding: EdgeInsets.only(top: Dimensions.height20, bottom: Dimensions.height20, left: Dimensions.width20, right: Dimensions.width20),
-                child: BigText(text: '\$ ${product.price} | Add to Cart', color: Colors.white,),
+                child: GestureDetector(
+                    onTap: (){
+                      popularProduct.addItem(product);
+                    },
+                    child: BigText(text: '\$ ${product.price} | Add to Cart', color: Colors.white,)),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(Dimensions.radius20),
                     color: AppColor.mainColor
