@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/controllers/popular_product_controller.dart';
 import 'package:food_delivery_app/controllers/recommended_product_controller.dart';
 import 'package:food_delivery_app/models/products_model.dart';
+import 'package:food_delivery_app/pages/cart/cart_page.dart';
 import 'package:food_delivery_app/pages/food/popular_food_detail.dart';
 import 'package:food_delivery_app/pages/home/main_food_page.dart';
 import 'package:food_delivery_app/routes/route_helper.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       home: MainFoodPage(),
-      //initialRoute: RouteHelper.initial,
+      initialRoute: RouteHelper.initial,
       getPages: RouteHelper.routes,
     );
   }

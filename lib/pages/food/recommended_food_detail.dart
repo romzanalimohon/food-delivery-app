@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/controllers/cart_controller.dart';
 import 'package:food_delivery_app/controllers/popular_product_controller.dart';
 import 'package:food_delivery_app/controllers/recommended_product_controller.dart';
+import 'package:food_delivery_app/pages/cart/cart_page.dart';
 import 'package:food_delivery_app/routes/route_helper.dart';
 import 'package:food_delivery_app/utils/app_color.dart';
 import 'package:food_delivery_app/utils/app_constants.dart';
@@ -18,6 +20,7 @@ class RecommendedFoodDetail extends StatelessWidget {
   Widget build(BuildContext context) {
 
     var product = Get.find<RecommendedProductController>().recommendedProductList[pageId];
+    Get.find<PopularProductController>().initProduct(product, Get.find<CartController>());
 
     return Scaffold(
       body: CustomScrollView(
@@ -33,7 +36,39 @@ class RecommendedFoodDetail extends StatelessWidget {
                       Get.toNamed(RouteHelper.getInitial());
                     },
                     child: AppIcon(icon: Icons.clear)),
-                AppIcon(icon: Icons.shopping_cart_outlined),
+                //AppIcon(icon: Icons.shopping_cart_outlined),
+                GetBuilder<PopularProductController>(builder: (controller){
+                  return Stack(
+                    children: [
+                      AppIcon(icon: Icons.shopping_cart_outlined),
+                      Get.find<PopularProductController>().totalItems >= 1 ?
+                      Positioned(
+                        right:0, top:0,
+                        child: GestureDetector(
+                          onTap: (){
+                            Get.to(()=>CartPage());
+                          },
+                          child: AppIcon(icon: Icons.circle,
+                            size: 20,
+                            iconColor: Colors.transparent,
+                            backgroundColor: AppColor.mainColor,),
+                        ),
+                      ) :
+                      Container(),
+
+                      Get.find<PopularProductController>().totalItems >= 1 ?
+                      Positioned(
+                        right:3, top:3,
+                        child: BigText(text: Get.find<PopularProductController>().totalItems.toString(),
+                          size: 12, color: Colors.white,
+                        ),
+                      ) :
+                      Container(),
+
+
+                    ],
+                  );
+                })
               ],
             ),
             bottom: PreferredSize(
@@ -141,12 +176,17 @@ class RecommendedFoodDetail extends StatelessWidget {
                             color: AppColor.mainColor,
                           )
                       ),
-                      Container(
-                        padding: EdgeInsets.only(top: Dimensions.height20, bottom: Dimensions.height20, left: Dimensions.width20, right: Dimensions.width20),
-                        child: BigText(text: '\$ ${product.price} | Add to Cart', color: Colors.white,),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(Dimensions.radius20),
-                            color: AppColor.mainColor
+                      GestureDetector(
+                        onTap: (){
+                          controller.addItem(product);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.only(top: Dimensions.height20, bottom: Dimensions.height20, left: Dimensions.width20, right: Dimensions.width20),
+                          child: BigText(text: '\$ ${product.price} | Add to Cart', color: Colors.white,),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(Dimensions.radius20),
+                              color: AppColor.mainColor
+                          ),
                         ),
                       )
                     ],
