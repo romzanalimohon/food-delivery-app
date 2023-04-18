@@ -24,10 +24,10 @@ class MyApp extends StatelessWidget {
       return GetBuilder<RecommendedProductController>(builder: (_){
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
-          home: SignInPage(),
+          //home: SignInPage(),
           //home: SplashScreen(),
-          //initialRoute: RouteHelper.getSplashPage(),
-          //getPages: RouteHelper.routes,
+          initialRoute: RouteHelper.getSplashPage(),
+          getPages: RouteHelper.routes,
         );
       });
     });

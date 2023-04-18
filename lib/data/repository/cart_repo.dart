@@ -22,7 +22,6 @@ class CartRepo{
       return cart.add(jsonEncode(element));
     });
 
-    //cartList.forEach((element)=> cart.add(jsonEncode(element)));
     sharedPreferences.setStringList(AppConstants.CART_LIST, cart);
     //print(sharedPreferences.getStringList(AppConstants.CART_LIST));
     //getCartList();
@@ -68,6 +67,12 @@ class CartRepo{
   void removeCart() {
     cart = [];
     sharedPreferences.remove(AppConstants.CART_LIST);
+  }
+
+  void clearCartHistory(){
+    removeCart();
+    cartHistory = [];
+    sharedPreferences.remove(AppConstants.CART_HISTORY_LIST);
   }
 
 }
